@@ -147,9 +147,27 @@
     <nav>
         <button class="tab-btn" onclick="cambiarPestana('tab-fixture')">Fixture</button>
         <button class="tab-btn" onclick="cambiarPestana('tab-grupos')">Grupos</button>
-        <button class="tab-btn activo" onclick="cambiarPestana('tab-polla')">Ranking Polla</button>
+        <button class="tab-btn" onclick="cambiarPestana('tab-polla')">Ranking Polla</button>
+        <button class="tab-btn" onclick="cambiarPestana('tab-bases')">Bases</button>
     </nav>
+<section id="tab-bases" class="seccion-contenido">
+            <div class="tarjeta-minimalista" style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid #edf2f7;">
+                <h2 style="color: var(--primario); margin-bottom: 15px; border-bottom: 2px solid #f7fafc; padding-bottom: 8px;">📋 Sistema de Puntuación</h2>
+                <ul style="padding-left: 20px; line-height: 1.6;">
+                    <li><strong>Resultado Exacto:</strong> Si le achuntas al marcador exacto sumas <span style="color: var(--primario); font-weight: bold;">+3 Puntos</span>.</li>
+                    <li><strong>Acierto de Ganador/Empate:</strong> Si le achuntas a quién gana pero no al marcador exacto sumas <span style="color: var(--primario); font-weight: bold;">+1 Punto</span>.</li>
+                    <li><strong>Sin Acierto:</strong> 0 Puntos.</li>
+                </ul>
+            </div>
 
+            <div class="tarjeta-minimalista" style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid #edf2f7;">
+                <h2 style="color: var(--primario); margin-bottom: 15px; border-bottom: 2px solid #f7fafc; padding-bottom: 8px;">⚙️ Reglas Generales</h2>
+                <ul style="padding-left: 20px; line-height: 1.6;">
+                    <li><strong>Plazos:</strong> Los pronósticos se cierran antes del primer partido del torneo.</li>
+                    <li><strong>Desempate:</strong> En caso de empate en la tabla general, ganará quien tenga más "Resultados Exactos".</li>
+                </ul>
+            </div>
+        </section>
     <main>
         <section id="tab-fixture" class="seccion-contenido">
             <select id="filtroFase" class="selector-caja" onchange="renderizarFixture()">
