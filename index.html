@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polla Mundial 2026 - En Vivo</title>
+    <style>
+        :root {
+            --primario: #8a1538; 
+            --secundario: #eeefee;
+            --texto: #2d3748;
+            --verde-wa: #25d366;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f7fafc;
+            color: var(--texto);
+            padding-bottom: 60px;
+        }
+
+        header {
+            background-color: var(--primario);
+            color: white;
+            text-align: center;
+            padding: 30px 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 { font-size: 2rem; margin-bottom: 5px; }
+        header p { font-size: 1rem; opacity: 0.9; }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .tab-btn {
+            flex: 1;
+            max-width: 200px;
+            background: none;
+            border: none;
+            padding: 15px 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #718096;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn:hover { color: var(--primario); background-color: #f7fafc; }
+        .tab-btn.activo { color: var(--primario); border-bottom-color: var(--primario); }
+
+        main { max-width: 800px; margin: 20px auto; padding: 0 15px; }
+        .seccion-contenido { display: none; }
+        .seccion-contenido.activa { display: block; }
+
+        .tarjeta-minimalista {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02), 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #edf2f7;
+        }
+
+        .tarjeta-minimalista h2 {
+            font-size: 1.3rem;
+            color: var(--primario);
+            margin-bottom: 15px;
+            border-bottom: 2px solid #f7fafc;
+            padding-bottom: 8px;
+        }
+
+        .selector-caja {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            font-size: 1rem;
+            background-color: white;
+            margin-bottom: 15px;
+            outline: none;
+        }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.95rem; }
+        th { background-color: #f7fafc; color: #4a5568; font-weight: 600; text-align: left; padding: 10px; border-bottom: 2px solid #edf2f7; }
+        td { padding: 12px 10px; border-bottom: 1px solid #edf2f7; }
+        tr.clasificado { border-left: 4px solid #48bb78; }
+
+        .partido-fila {
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            background: white;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border: 1px solid #edf2f7;
+        }
+
+        @media(min-width: 600px) {
+            .partido-fila { flex-direction: row; justify-content: space-between; align-items: center; }
+        }
+
+        .info-partido { font-size: 0.85rem; color: #718096; margin-bottom: 10px; }
+        @media(min-width: 600px) { .info-partido { margin-bottom: 0; } }
+
+        .equipos-caja { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-width: 280px; }
+        .rival { flex: 1; font-weight: 500; }
+        .rival.local { text-align: right; }
+        .rival.visita { text-align: left; }
+
+        .marcador-caja {
+            background-color: #edf2f7;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border-radius: 6px;
+        }
+        
+        .cargando { text-align: center; color: #718096; padding: 20px; font-style: italic; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🏆 LA POLLA DEL JORDAN 🏆</h1>
+        <p>Resultados Conectados a Google Sheets en Tiempo Real</p>
+    </header>
+
+    <nav>
+        <button class="tab-btn" onclick="cambiarPestana('tab-fixture')">Fixture</button>
+        <button class="tab-btn" onclick="cambiarPestana('tab-grupos')">Grupos</button>
+        <button class="tab-btn activo" onclick="cambiarPestana('tab-polla')">Ranking Polla</button>
+    </nav>
+
+    <main>
+        <section id="tab-fixture" class="seccion-contenido">
+            <select id="filtroFase" class="selector-caja" onchange="renderizarFixture()">
+                <option value="Jornada 1">Fase de Grupos - Jornada 1 (Partidos 1 al 24)</option>
+                <option value="Jornada 2">Fase de Grupos - Jornada 2 (Partidos 25 al 48)</option>
+                <option value="Jornada 3">Fase de Grupos - Jornada 3 (Partidos 49 al 72)</option>
+            </select>
+            <div id="contenedor-partidos"></div>
+        </section>
+
+        <section id="tab-grupos" class="seccion-contenido">
+            <div id="contenedor-grupos"></div>
+        </section>
+
+        <section id="tab-polla" class="seccion-contenido activa">
+            <div class="tarjeta-minimalista">
+                <h2>Tabla General de Competidores</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">Pos</th>
+                            <th>Nombre</th>
+                            <th style="text-align: center;">Exactos (3pts)</th>
+                            <th style="text-align: center;">Aciertos (1pt)</th>
+                            <th style="text-align: right; padding-right: 15px;">Total Pts</th>
+                        </tr>
+                    </thead>
+                    <tbody id="contenedor-ranking">
+                        <tr><td colspan="5" class="cargando">Sincronizando puntajes desde Google Sheets...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <a id="linkGrupoWhatsapp" href="https://chat.whatsapp.com/LIl65YmGqtSFRequN7QXMW" 
+       target="_blank" 
+       rel="noopener noreferrer"
+       style="
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background-color: var(--verde-wa);
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 30px;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            z-index: 9999;
+       "
+    >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        Grupo de la Polla
+    </a>
+
+    <script>
+        // CONFIGURACIÓN: REEMPLAZA ESTA URL CON TU LINK CSV DE GOOGLE SHEETS
+        const urlGoogleSheet = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS0Lzsp9KEvOpTzPh2ls0VpyYOjPc8RgCeXwEh2hWbgdjrwsWwBLFliMDAvgq2TcGeIf-ry_5O0XQVr/pub?output=csv";
+
+        async function consumirGoogleSheet() {
+            try {
+                const respuesta = await fetch(urlGoogleSheet);
+                const texto = await respuesta.text();
+                const filas = texto.split("\n").map(fila => fila.split(","));
+                const contenedor = document.getElementById('contenedor-ranking');
+                if (!contenedor) return;
+                contenedor.innerHTML = '';
+
+                let posicionVisual = 1;
+
+                for(let i = 1; i < filas.length; i++) {
+                    const columna = filas[i];
+                    if (!columna || columna.length < 5 || !columna[1] || columna[1].trim() === "") {
+                        continue; 
+                    }
+
+                    const nombre = columna[1].trim();
+                    const exactos = columna[2].trim() || "0";
+                    const aciertos = columna[3].trim() || "0";
+                    const totalPts = columna[4].trim().replace('\r','').replace('\n','') || "0";
+
+                    const estiloLider = posicionVisual === 1 ? 'style="background-color: #fffbeb; font-weight: bold;"' : '';
+
+                    contenedor.innerHTML += `
+                        <tr ${estiloLider}>
+                            <td>${posicionVisual}</td>
+                            <td>${nombre}</td>
+                            <td style="text-align: center;">${exactos}</td>
+                            <td style="text-align: center;">${aciertos}</td>
+                            <td style="text-align: right; padding-right: 15px; color: var(--primario);"><strong>${totalPts} pts</strong></td>
+                        </tr>`;
+                    posicionVisual++;
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                document.getElementById('contenedor-ranking').innerHTML = `<tr><td colspan="5" style="color:red; text-align:center; padding:15px;">Error al conectar con las puntuaciones en vivo.</td></tr>`;
+            }
+        }
+
+        // BASE DE DATOS DE GRUPOS FIJOS
+        const datosMundial = [
+            { grupo: "Grupo A", equipos: [{nombre: "México", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Estados Unidos", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Canadá", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Costa Rica", pj:0, g:0, e:0, p:0, pts:0}] },
+            { grupo: "Grupo B", equipos: [{nombre: "Brasil", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "España", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Colombia", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Marruecos", pj:0, g:0, e:0, p:0, pts:0}] },
+            { grupo: "Grupo C", equipos: [{nombre: "Argentina", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Francia", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Inglaterra", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Portugal", pj:0, g:0, e:0, p:0, pts:0}] },
+            { grupo: "Grupo D", equipos: [{nombre: "Uruguay", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Bélgica", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Croacia", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Japón", pj:0, g:0, e:0, p:0, pts:0}] },
+            { grupo: "Grupo E", equipos: [{nombre: "Alemania", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Países Bajos", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Chile", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Ecuador", pj:0, g:0, e:0, p:0, pts:0}] },
+            { grupo: "Grupo F", equipos: [{nombre: "Italia", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Dinamarca", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Suiza", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Perú", pj:0, g:0, e:0, p:0, pts:0}] },
+            { grupo: "Grupo G", equipos: [{nombre: "Corea del Sur", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Australia", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Senegal", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Túnez", pj:0, g:0, e:0, p:0, pts:0}] },
+            { grupo: "Grupo H", equipos: [{nombre: "Irán", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Argelia", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Ucrania", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Gales", pj:0, g:0, e:0, p:0, pts:0}] },
+            { grupo: "Grupo I", equipos: [{nombre: "Suecia", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Grecia", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Turquía", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Austria", pj:0, g:0, e:0, p:0, pts:0}] },
+            { grupo: "Grupo J", equipos: [{nombre: "Jamaica", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Honduras", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Panamá", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Camerún", pj:0, g:0, e:0, p:0, pts:0}] },
+            { grupo: "Grupo K", equipos: [{nombre: "Ghana", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Costa de Marfil", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Nigeria", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Egipto", pj:0, g:0, e:0, p:0, pts:0}] },
+            { grupo: "Grupo L", equipos: [{nombre: "Arabia Saudita", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Qatar", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Irak", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Emiratos Árabes", pj:0, g:0, e:0, p:0, pts:0}] }
+        ];
+
+        // FIXTURE COMPLETO 72 PARTIDOS
+        const todosLosPartidos = [
+            // JORNADA 1
+            { num: "Part. 01", fase: "Jornada 1", grupo: "Grupo A", fecha: "11 Junio", sede: "Estadio Azteca", L: "México", gL: "-", gV: "-", V: "Costa Rica" },
+            { num: "Part. 02", fase: "Jornada 1", grupo: "Grupo A", fecha: "11 Junio", sede: "SoFi Stadium", L: "Estados Unidos", gL: "-", gV: "-", V: "Canadá" },
+            { num: "Part. 03", fase: "Jornada 1", grupo: "Grupo B", fecha: "12 Junio", sede: "MetLife Stadium", L: "Brasil", gL: "-", gV: "-", V: "Marruecos" },
+            { num: "Part. 04", fase: "Jornada 1", grupo: "Grupo B", fecha: "12 Junio", sede: "Mercedes-Benz", L: "España", gL: "-", gV: "-", V: "Colombia" },
+            { num: "Part. 05", fase: "Jornada 1", grupo: "Grupo C", fecha: "13 Junio", sede: "Gillette Stadium", L: "Argentina", gL: "-", gV: "-", V: "Portugal" },
+            { num: "Part. 06", fase: "Jornada 1", grupo: "Grupo C", fecha: "13 Junio", sede: "Hard Rock Stadium", L: "Francia", gL: "-", gV: "-", V: "Inglaterra" },
+            { num: "Part. 07", fase: "Jornada 1", grupo: "Grupo D", fecha: "14 Junio", sede: "AT&T Stadium", L: "Uruguay", gL: "-", gV: "-", V: "Japón" },
+            { num: "Part. 08", fase: "Jornada 1", grupo: "Grupo D", fecha: "14 Junio", sede: "NRG Stadium", L: "Bélgica", gL: "-", gV: "-", V: "Croacia" },
+            { num: "Part. 09", fase: "Jornada 1", grupo: "Grupo E", fecha: "15 Junio", sede: "Levi's Stadium", L: "Alemania", gL: "-", gV: "-", V: "Ecuador" },
+            { num: "Part. 10", fase: "Jornada 1", grupo: "Grupo E", fecha: "15 Junio", sede: "Lumen Field", L: "Países Bajos", gL: "-", gV: "-", V: "Chile" },
+            { num: "Part. 11", fase: "Jornada 1", grupo: "Grupo F", fecha: "16 Junio", sede: "Lincoln Financial", L: "Italia", gL: "-", gV: "-", V: "Perú" },
+            { num: "Part. 12", fase: "Jornada 1", grupo: "Grupo F", fecha: "16 Junio", sede: "Arrowhead Stadium", L: "Dinamarca", gL: "-", gV: "-", V: "Suiza" },
+            { num: "Part. 13", fase: "Jornada 1", grupo: "Grupo G", fecha: "17 Junio", sede: "BC Place", L: "Corea del Sur", gL: "-", gV: "-", V: "Túnez" },
+            { num: "Part. 14", fase: "Jornada 1", grupo: "Grupo G", fecha: "17 Junio", sede: "BMO Field", L: "Australia", gL: "-", gV: "-", V: "Senegal" },
+            { num: "Part. 15", fase: "Jornada 1", grupo: "Grupo H", fecha: "18 Junio", sede: "Estadio BBVA", L: "Irán", gL: "-", gV: "-", V: "Gales" },
+            { num: "Part. 16", fase: "Jornada 1", grupo: "Grupo H", fecha: "18 Junio", sede: "Estadio Akron", L: "Argelia", gL: "-", gV: "-", V: "Ucrania" },
+            { num: "Part. 17", fase: "Jornada 1", grupo: "Grupo I", fecha: "19 Junio", sede: "MetLife Stadium", L: "Suecia", gL: "-", gV: "-", V: "Austria" },
+            { num: "Part. 18", fase: "Jornada 1", grupo: "Grupo I", fecha: "19 Junio", sede: "Gillette Stadium", L: "Grecia", gL: "-", gV: "-", V: "Turquía" },
+            { num: "Part. 19", fase: "Jornada 1", grupo: "Grupo J", fecha: "20 Junio", sede: "NRG Stadium", L: "Jamaica", gL: "-", gV: "-", V: "Camerún" },
+            { num: "Part. 20", fase: "Jornada 1", grupo: "Grupo J", fecha: "20 Junio", sede: "AT&T Stadium", L: "Honduras", gL: "-", gV: "-", V: "Panamá" },
+            { num: "Part. 21", fase: "Jornada 1", grupo: "Grupo K", fecha: "21 Junio", sede: "SoFi Stadium", L: "Ghana", gL: "-", gV: "-", V: "Egipto" },
+            { num: "Part. 22", fase: "Jornada 1", grupo: "Grupo K", fecha: "21 Junio", sede: "Levi's Stadium", L: "Costa de Marfil", gL: "-", gV: "-", V: "Nigeria" },
+            { num: "Part. 23", fase: "Jornada 1", grupo: "Grupo L", fecha: "22 Junio", sede: "Lumen Field", L: "Arabia Saudita", gL: "-", gV: "-", V: "Emiratos Árabes" },
+            { num: "Part. 24", fase: "Jornada 1", grupo: "Grupo L", fecha: "22 Junio", sede: "BC Place", L: "Qatar", gL: "-", gV: "-", V: "Irak" },
+
+            // JORNADA 2
+            { num: "Part. 25", fase: "Jornada 2", grupo: "Grupo A", fecha: "23 Junio", sede: "Estadio Azteca", L: "México", gL: "-", gV: "-", V: "Canadá" },
+            { num: "Part. 26", fase: "Jornada 2", grupo: "Grupo A", fecha: "23 Junio", sede: "Hard Rock Stadium", L: "Estados Unidos", gL: "-", gV: "-", V: "Costa Rica" },
+            { num: "Part. 27", fase: "Jornada 2", group: "Grupo B", fecha: "24 Junio", sede: "Mercedes-Benz", L: "Brasil", gL: "-", gV: "-", V: "Colombia" },
+            { num: "Part. 28", fase: "Jornada 2", grupo: "Grupo B", fecha: "24 Junio", sede: "Lincoln Financial", L: "España", gL: "-", gV: "-", V: "Marruecos" },
+            { num: "Part. 29", fase: "Jornada 2", grupo: "Grupo C", fecha: "25 Junio", sede: "Arrowhead Stadium", L: "Argentina", gL: "-", gV: "-", V: "Inglaterra" },
+            { num: "Part. 30", fase: "Jornada 2", grupo: "Grupo C", fecha: "25 Junio", sede: "BMO Field", L: "Francia", gL: "-", gV: "-", V: "Portugal" },
+            { num: "Part. 31", fase: "Jornada 2", grupo: "Grupo D", fecha: "26 Junio", sede: "Estadio BBVA", L: "Uruguay", gL: "-", gV: "-", V: "Croacia" },
+            { num: "Part. 32", fase: "Jornada 2", grupo: "Grupo D", fecha: "26 Junio", sede: "Estadio Akron", L: "Bélgica", gL: "-", gV: "-", V: "Japón" },
+            { num: "Part. 33", fase: "Jornada 2", grupo: "Grupo E", fecha: "27 Junio", sede: "MetLife Stadium", L: "Alemania", gL: "-", gV: "-", V: "Chile" },
+            { num: "Part. 34", fase: "Jornada 2", grupo: "Grupo E", fecha: "27 Junio", sede: "Gillette Stadium", L: "Países Bajos", gL: "-", gV: "-", V: "Ecuador" },
+            { num: "Part. 35", fase: "Jornada 2", grupo: "Grupo F", fecha: "28 Junio", sede: "NRG Stadium", L: "Italia", gL: "-", gV: "-", V: "Suiza" },
+            { num: "Part. 36", fase: "Jornada 2", grupo: "Grupo F", fecha: "28 Junio", sede: "AT&T Stadium", L: "Dinamarca", gL: "-", gV: "-", V: "Perú" },
+            { num: "Part. 37", fase: "Jornada 2", grupo: "Grupo G", fecha: "29 Junio", sede: "SoFi Stadium", L: "Corea del Sur", gL: "-", gV: "-", V: "Senegal" },
+            { num: "Part. 38", fase: "Jornada 2", grupo: "Grupo G", fecha: "29 Junio", sede: "Levi's Stadium", L: "Australia", gL: "-", gV: "-", V: "Túnez" },
+            { num: "Part. 39", fase: "Jornada 2", grupo: "Grupo H", fecha: "30 Junio", sede: "Lumen Field", L: "Irán", gL: "-", gV: "-", V: "Ucrania" },
+            { num: "Part. 40", fase: "Jornada 2", grupo: "Grupo H", fecha: "30 Junio", sede: "BC Place", L: "Argelia", gL: "-", gV: "-", V: "Gales" },
+            { num: "Part. 41", fase: "Jornada 2", grupo: "Grupo I", fecha: "01 Julio", sede: "Estadio Azteca", L: "Suecia", gL: "-", gV: "-", V: "Turquía" },
+            { num: "Part. 42", fase: "Jornada 2", grupo: "Grupo I", fecha: "01 Julio", sede: "Hard Rock Stadium", L: "Grecia", gL: "-", gV: "-", V: "Austria" },
+            { num: "Part. 43", fase: "Jornada 2", grupo: "Grupo J", fecha: "02 Julio", sede: "Mercedes-Benz", L: "Jamaica", gL: "-", gV: "-", V: "Panamá" },
+            { num: "Part. 44", fase: "Jornada 2", grupo: "Grupo J", fecha: "02 Julio", sede: "Lincoln Financial", L: "Honduras", gL: "-", gV: "-", V: "Camerún" },
+            { num: "Part. 45", fase: "Jornada 2", grupo: "Grupo K", fecha: "03 Julio", sede: "Arrowhead Stadium", L: "Ghana", gL: "-", gV: "-", V: "Nigeria" },
+            { num: "Part. 46", fase: "Jornada 2", grupo: "Grupo K", fecha: "03 Julio", sede: "BMO Field", L: "Costa de Marfil", gL: "-", gV: "-", V: "Egipto" },
+            { num: "Part. 47", fase: "Jornada 2", grupo: "Grupo L", fecha: "04 Julio", sede: "Estadio BBVA", L: "Arabia Saudita", gL: "-", gV: "-", V: "Irak" },
+            { num: "Part. 48", fase: "Jornada 2", grupo: "Grupo L", fecha: "04 Julio", sede: "Estadio Akron", L: "Qatar", gL: "-", gV: "-", V: "Emiratos Árabes" },
+
+            // JORNADA 3
+            { num: "Part. 49", fase: "Jornada 3", grupo: "Grupo A", fecha: "06 Julio", sede: "MetLife Stadium", L: "Canadá", gL: "-", gV: "-", V: "Costa Rica" },
+            { num: "Part. 50", fase: "Jornada 3", grupo: "Grupo A", fecha: "06 Julio", sede: "SoFi Stadium", L: "México", gL: "-", gV: "-", V: "Estados Unidos" },
+            { num: "Part. 51", fase: "Jornada 3", grupo: "Grupo B", fecha: "06 Julio", sede: "NRG Stadium", L: "Marruecos", gL: "-", gV: "-", V: "Colombia" },
+            { num: "Part. 52", fase: "Jornada 3", grupo: "Grupo B", fecha: "06 Julio", sede: "AT&T Stadium", L: "Brasil", gL: "-", gV: "-", V: "España" },
+            { num: "Part. 53", fase: "Jornada 3", grupo: "Grupo C", fecha: "07 Julio", sede: "Hard Rock Stadium", L: "Portugal", gL: "-", gV: "-", V: "Inglaterra" },
+            { num: "Part. 54", fase: "Jornada 3", grupo: "Grupo C", fecha: "07 Julio", sede: "Mercedes-Benz", L: "Argentina", gL: "-", gV: "-", V: "Francia" },
+            { num: "Part. 55", fase: "Jornada 3", grupo: "Grupo D", fecha: "07 Julio", sede: "Lincoln Financial", L: "Japón", gL: "-", gV: "-", V: "Croacia" },
+            { num: "Part. 56", fase: "Jornada 3", grupo: "Grupo D", fecha: "07 Julio", sede: "Arrowhead Stadium", L: "Uruguay", gL: "-", gV: "-", V: "Bélgica" },
+            { num: "Part. 57", fase: "Jornada 3", grupo: "Grupo E", fecha: "08 Julio", sede: "Gillette Stadium", L: "Ecuador", gL: "-", gV: "-", V: "Chile" },
+            { num: "Part. 58", fase: "Jornada 3", grupo: "Grupo E", fecha: "08 Julio", sede: "Lumen Field", L: "Alemania", gL: "-", gV: "-", V: "Países Bajos" },
+            { num: "Part. 59", fase: "Jornada 3", grupo: "Grupo F", fecha: "08 Julio", sede: "BC Place", L: "Perú", gL: "-", gV: "-", V: "Suiza" },
+            { num: "Part. 60", fase: "Jornada 3", grupo: "Grupo F", fecha: "08 Julio", sede: "Estadio Azteca", L: "Italia", gL: "-", gV: "-", V: "Dinamarca" },
+            { num: "Part. 61", fase: "Jornada 3", grupo: "Grupo G", fecha: "09 Julio", sede: "Estadio BBVA", L: "Túnez", gL: "-", gV: "-", V: "Senegal" },
+            { num: "Part. 62", fase: "Jornada 3", grupo: "Grupo G", fecha: "09 Julio", sede: "Estadio Akron", L: "Corea del Sur", gL: "-", gV: "-", V: "Australia" },
+            { num: "Part. 63", fase: "Jornada 3", grupo: "Grupo H", fecha: "09 Julio", sede: "Levi's Stadium", L: "Gales", gL: "-", gV: "-", V: "Ucrania" },
+            { num: "Part. 64", fase: "Jornada 3", grupo: "Grupo H", fecha: "09 Julio", sede: "BMO Field", L: "Irán", gL: "-", gV: "-", V: "Argelia" },
+            { num: "Part. 65", fase: "Jornada 3", grupo: "Grupo I", fecha: "10 Julio", sede: "MetLife Stadium", L: "Austria", gL: "-", gV: "-", V: "Turquía" },
+            { num: "Part. 66", fase: "Jornada 3", grupo: "Grupo I", fecha: "10 Julio", sede: "Hard Rock Stadium", L: "Suecia", gL: "-", gV: "-", V: "Grecia" },
+            { num: "Part. 67", fase: "Jornada 3", grupo: "Grupo J", fecha: "10 Julio", sede: "NRG Stadium", L: "Camerún", gL: "-", gV: "-", V: "Panamá" },
+            { num: "Part. 68", fase: "Jornada 3", grupo: "Grupo J", fecha: "10 Julio", sede: "AT&T Stadium", L: "Jamaica", gL: "-", gV: "-", V: "Honduras" },
+            { num: "Part. 69", fase: "Jornada 3", grupo: "Grupo K", fecha: "11 Julio", sede: "Mercedes-Benz", L: "Egipto", gL: "-", gV: "-", V: "Nigeria" },
+            { num: "Part. 70", fase: "Jornada 3", grupo: "Grupo K", fecha: "11 Julio", sede: "Lincoln Financial", L: "Ghana", gL: "-", gV: "-", V: "Costa de Marfil" },
+            { num: "Part. 71", fase: "Jornada 3", grupo: "Grupo L", fecha: "11 Julio", sede: "Arrowhead Stadium", L: "Emiratos Árabes", gL: "-", gV: "-", V: "Irak" },
+            { num: "Part. 72", fase: "Jornada 3", grupo: "Grupo L", fecha: "11 Julio", sede: "BMO Field", L: "Arabia Saudita", gL: "-", gV: "-", V: "Qatar" }
+        ];
+
+        function cambiarPestana(idSeccion) {
+            document.querySelectorAll('.seccion-contenido').forEach(sec => sec.classList.remove('activa'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('activo'));
+            document.getElementById(idSeccion).classList.add('activa');
+            
+            const botonActivo = Array.from(document.querySelectorAll('.tab-btn')).find(btn => btn.getAttribute('onclick').includes(idSeccion));
+            if (botonActivo) botonActivo.classList.add('activo');
+        }
+
+        function cargarTablasPosiciones() {
+            const contenedor = document.getElementById('contenedor-grupos');
+            if (!contenedor) return;
+            contenedor.innerHTML = '';
+            
+            datosMundial.forEach(zona => {
+                let tablaHTML = `
+                    <div class="tarjeta-minimalista">
+                        <h2>${zona.grupo}</h2>
+                        <table>
+                            <thead>
+                                <tr><th style="width: 40px;">Pos</th><th>Equipo</th><th style="text-align: center; width: 45px;">PJ</th><th style="text-align: center; width: 45px;">Pts</th></tr>
+                            </thead>
+                            <tbody>`;
+                zona.equipos.forEach((equipo, indice) => {
+                    const claseClasificado = indice < 2 ? 'class="clasificado"' : '';
+                    tablaHTML += `
+                        <tr ${claseClasificado}>
+                            <td><strong>${indice + 1}</strong></td>
+                            <td>${equipo.nombre}</td>
+                            <td style="text-align: center;">${equipo.pj}</td>
+                            <td style="text-align: center; color: var(--primario);"><strong>${equipo.pts}</strong></td>
+                        </tr>`;
+                });
+                tablaHTML += `</tbody></table></div>`;
+                contenedor.innerHTML += tablaHTML;
+            });
+        }
+
+        function renderizarFixture() {
+            const selector = document.getElementById('filtroFase');
+            const contenedor = document.getElementById('contenedor-partidos');
+            if (!selector || !contenedor) return;
+            
+            const valorFiltro = selector.value;
+            contenedor.innerHTML = '';
+            const partidosFiltrados = todosLosPartidos.filter(p => p.fase === valorFiltro);
+
+            partidosFiltrados.forEach(p => {
+                contenedor.innerHTML += `
+                    <div class="partido-fila">
+                        <div class="info-partido"><strong>${p.num}</strong> — ${p.grupo}<br>📅 ${p.fecha} | 🏟️ ${p.sede}</div>
+                        <div class="equipos-caja">
+                            <div class="rival local">${p.L}</div>
+                            <div class="marcador-caja">${p.gL}</div>
+                            <div class="marcador-caja">${p.gV}</div>
+                            <div class="rival visita">${p.V}</div>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        window.onload = function() {
+            renderizarFixture();
+            cargarTablasPosiciones();
+            consumirGoogleSheet();
+        };
+    </script>
+</body>
+</html>
