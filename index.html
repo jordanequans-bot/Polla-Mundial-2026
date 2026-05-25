@@ -292,27 +292,45 @@
             { grupo: "Grupo L", equipos: [{nombre: "Arabia Saudita", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Qatar", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Irak", pj:0, g:0, e:0, p:0, pts:0}, {nombre: "Emiratos Árabes", pj:0, g:0, e:0, p:0, pts:0}] }
         ];
 
-       // FIXTURE REAL DE APERTURA - MUNDIAL 2026
+     // FIXTURE COMPLETO - PRIMERA FECHA DE TODOS LOS GRUPOS (JORNADA 1)
         const todosLosPartidos = [
-            // JORNADA 1 (Partidos reales de apertura oficial)
-            { num: "Part. 01", fase: "Jornada 1", grupo: "Grupo A", fecha: "11 Junio", Sede: "Estadio Azteca (CDMX)", L: "México", gL: "-", gV: "-", V: "Sudáfrica" },
-            { num: "Part. 02", fase: "Jornada 1", grupo: "Grupo A", fecha: "11 Junio", Sede: "Estadio Guadalajara", L: "Corea del Sur", gL: "-", gV: "-", V: "República Checa" },
-            { num: "Part. 03", fase: "Jornada 1", grupo: "Grupo B", fecha: "12 Junio", Sede: "Estadio Toronto", L: "Canadá", gL: "-", gV: "-", V: "Bosnia y Herz." },
-            { num: "Part. 04", fase: "Jornada 1", grupo: "Grupo D", fecha: "12 Junio", Sede: "Estadio Los Ángeles", L: "Estados Unidos", gL: "-", gV: "-", V: "Paraguay" },
-            { num: "Part. 05", fase: "Jornada 1", grupo: "Grupo B", fecha: "13 Junio", Sede: "Estadio San Francisco", L: "Catar", gL: "-", gV: "-", V: "Suiza" },
-            { num: "Part. 06", fase: "Jornada 1", grupo: "Grupo C", fecha: "13 Junio", Sede: "Estadio Nueva York/NJ", L: "Brasil", gL: "-", gV: "-", V: "Marruecos" },
-            { num: "Part. 07", fase: "Jornada 1", grupo: "Grupo C", fecha: "13 Junio", Sede: "Estadio Boston", L: "Haití", gL: "-", gV: "-", V: "Escocia" },
-            { num: "Part. 08", fase: "Jornada 1", grupo: "Grupo D", fecha: "13 Junio", Sede: "Estadio Vancouver", L: "Australia", gL: "-", gV: "-", V: "Turquía" },
-            { num: "Part. 09", fase: "Jornada 1", grupo: "Grupo E", fecha: "14 Junio", Sede: "Estadio Houston", L: "Alemania", gL: "-", gV: "-", V: "Curazao" },
-            { num: "Part. 10", fase: "Jornada 1", grupo: "Grupo F", fecha: "14 Junio", Sede: "Estadio Dallas", L: "Países Bajos", gL: "-", gV: "-", V: "Japón" },
-            { num: "Part. 11", fase: "Jornada 1", grupo: "Grupo E", fecha: "14 Junio", Sede: "Estadio Filadelfia", L: "Costa de Marfil", gL: "-", gV: "-", V: "Ecuador" },
-            { num: "Part. 12", fase: "Jornada 1", grupo: "Grupo F", fecha: "14 Junio", Sede: "Estadio Monterrey", L: "Suecia", gL: "-", gV: "-", V: "Túnez" },
+            // GRUPO A
+            { num: "Part. 01", fase: "Jornada 1", grupo: "Grupo A", fecha: "11 Junio", sede: "Estadio Azteca (CDMX)", L: "México", gL: "-", gV: "-", V: "Sudáfrica" },
+            { num: "Part. 02", fase: "Jornada 1", grupo: "Grupo A", fecha: "11 Junio", sede: "Estadio Guadalajara", L: "Corea del Sur", gL: "-", gV: "-", V: "República Checa" },
             
-            // JORNADA 2 (Ejemplos de segundas fechas reales de los grupos)
-            { num: "Part. 25", fase: "Jornada 2", grupo: "Grupo A", fecha: "18 Junio", Sede: "Estadio Atlanta", L: "República Checa", gL: "-", gV: "-", V: "Sudáfrica" },
-            { num: "Part. 26", fase: "Jornada 2", grupo: "Grupo A", fecha: "18 Junio", Sede: "Estadio Guadalajara", L: "México", gL: "-", gV: "-", V: "Corea del Sur" },
-            { num: "Part. 27", fase: "Jornada 2", grupo: "Grupo B", fecha: "18 Junio", Sede: "Estadio Los Ángeles", L: "Suiza", gL: "-", gV: "-", V: "Bosnia y Herz." },
-            { num: "Part. 28", fase: "Jornada 2", grupo: "Grupo B", fecha: "18 Junio", Sede: "Estadio Vancouver", L: "Canadá", gL: "-", gV: "-", V: "Catar" }
+            // GRUPO B & D (Días de apertura en Canadá y EE.UU.)
+            { num: "Part. 03", fase: "Jornada 1", grupo: "Grupo B", fecha: "12 Junio", sede: "Estadio Toronto", L: "Canadá", gL: "-", gV: "-", V: "Bosnia y Herz." },
+            { num: "Part. 04", fase: "Jornada 1", grupo: "Grupo D", fecha: "12 Junio", sede: "Estadio Los Ángeles", L: "Estados Unidos", gL: "-", gV: "-", V: "Paraguay" },
+            
+            // GRUPO B, C & D
+            { num: "Part. 05", fase: "Jornada 1", grupo: "Grupo B", fecha: "13 Junio", sede: "Estadio San Francisco", L: "Catar", gL: "-", gV: "-", V: "Suiza" },
+            { num: "Part. 06", fase: "Jornada 1", grupo: "Grupo C", fecha: "13 Junio", sede: "Estadio Nueva York/NJ", L: "Brasil", gL: "-", gV: "-", V: "Marruecos" },
+            { num: "Part. 07", fase: "Jornada 1", grupo: "Grupo C", fecha: "13 Junio", sede: "Estadio Boston", L: "Haití", gL: "-", gV: "-", V: "Escocia" },
+            { num: "Part. 08", fase: "Jornada 1", grupo: "Grupo D", fecha: "13 Junio", sede: "Estadio Vancouver", L: "Australia", gL: "-", gV: "-", V: "Turquía" },
+            
+            // GRUPO E & F
+            { num: "Part. 09", fase: "Jornada 1", grupo: "Grupo E", fecha: "14 Junio", sede: "Estadio Houston", L: "Alemania", gL: "-", gV: "-", V: "Curazao" },
+            { num: "Part. 10", fase: "Jornada 1", grupo: "Grupo F", fecha: "14 Junio", sede: "Estadio Dallas", L: "Países Bajos", gL: "-", gV: "-", V: "Japón" },
+            { num: "Part. 11", fase: "Jornada 1", grupo: "Grupo E", fecha: "14 Junio", sede: "Estadio Filadelfia", L: "Costa de Marfil", gL: "-", gV: "-", V: "Ecuador" },
+            { num: "Part. 12", fase: "Jornada 1", grupo: "Grupo F", fecha: "14 Junio", sede: "Estadio Monterrey", L: "Suecia", gL: "-", gV: "-", V: "Túnez" },
+            
+            // GRUPO G & H
+            { num: "Part. 13", fase: "Jornada 1", grupo: "Grupo G", fecha: "15 Junio", sede: "Estadio Miami", L: "Bélgica", gL: "-", gV: "-", V: "Egipto" },
+            { num: "Part. 14", fase: "Jornada 1", grupo: "Grupo H", fecha: "15 Junio", sede: "Estadio Atlanta", L: "España", gL: "-", gV: "-", V: "Cabo Verde" },
+            { num: "Part. 15", fase: "Jornada 1", grupo: "Grupo G", fecha: "15 Junio", sede: "Estadio Los Ángeles", L: "Irán", gL: "-", gV: "-", V: "Nueva Zelanda" },
+            { num: "Part. 16", fase: "Jornada 1", grupo: "Grupo H", fecha: "15 Junio", sede: "Estadio Houston", L: "Arabia Saudita", gL: "-", gV: "-", V: "Uruguay" },
+            
+            // GRUPO I & J
+            { num: "Part. 17", fase: "Jornada 1", grupo: "Grupo I", fecha: "16 Junio", sede: "Estadio Nueva York/NJ", L: "Francia", gL: "-", gV: "-", V: "Senegal" },
+            { num: "Part. 18", fase: "Jornada 1", grupo: "Grupo J", fecha: "16 Junio", sede: "Estadio Dallas", L: "Argentina", gL: "-", gV: "-", V: "Argelia" },
+            { num: "Part. 19", fase: "Jornada 1", grupo: "Grupo I", fecha: "16 Junio", sede: "Estadio Boston", L: "Irak", gL: "-", gV: "-", V: "Noruega" },
+            { num: "Part. 20", fase: "Jornada 1", grupo: "Grupo J", fecha: "16 Junio", sede: "Estadio Puebla", L: "Austria", gL: "-", gV: "-", V: "Jordania" },
+            
+            // GRUPO K & L
+            { num: "Part. 21", fase: "Jornada 1", grupo: "Grupo K", fecha: "17 Junio", sede: "Estadio Toronto", L: "Portugal", gL: "-", gV: "-", V: "RD Congo" },
+            { num: "Part. 22", fase: "Jornada 1", grupo: "Grupo L", fecha: "17 Junio", sede: "Estadio Kansas City", L: "Inglaterra", gL: "-", gV: "-", V: "Croacia" },
+            { num: "Part. 23", fase: "Jornada 1", grupo: "Grupo K", fecha: "17 Junio", sede: "Estadio Silicon Valley", L: "Uzbekistán", gL: "-", gV: "-", V: "Colombia" },
+            { num: "Part. 24", fase: "Jornada 1", grupo: "Grupo L", fecha: "17 Junio", sede: "Estadio Houston", L: "Ghana", gL: "-", gV: "-", V: "Panamá" }
         ];
 
         function cambiarPestana(idSeccion) {
